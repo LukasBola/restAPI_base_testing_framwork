@@ -1,11 +1,13 @@
 package pl.javastart.restassured.tests.user;
 
 import org.testng.annotations.Test;
+import pl.javastart.restassured.main.pojo.ApiResponse;
 import pl.javastart.restassured.main.pojo.user.User;
 import pl.javastart.restassured.tests.testbases.SuiteTestBase;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.testng.Assert.assertEquals;
 
 public class CreateUserTests extends SuiteTestBase {
 
@@ -22,28 +24,26 @@ public class CreateUserTests extends SuiteTestBase {
         user.setPhone("+666 666 666");
         user.setUserStatus(666);
 
-        given().
-                body(user).
-                contentType("application/json").
-                when().post("user").
-                then().
-                assertThat().statusCode(200).
-                assertThat().body("code", equalTo(200)).
-                assertThat().body("type", equalTo("unknown")).
-                assertThat().body("message", equalTo(Integer.toString(user.getId())));
+////      I sposób
+//        given().
+//                body(user).
+//                contentType("application/json").
+//                when().post("user").
+//                then().
+//                assertThat().statusCode(200).
+//                assertThat().body(
+//                "code", equalTo(200),
+//                "type", equalTo("unknown"),
+//                "message", equalTo(Integer.toString(user.getId())));
 
-        given().
-                pathParam("username", user.getUsername()).
-                when().get("user/{username}").
-                then().
-                assertThat().statusCode(200).
-                assertThat().body("id", equalTo(user.getId())).
-                assertThat().body("username", equalTo(user.getUsername())).
-                assertThat().body("firstName", equalTo(user.getFirstName())).
-                assertThat().body("lastName", equalTo(user.getLastName())).
-                assertThat().body("email", equalTo(user.getEmail())).
-                assertThat().body("password", equalTo(user.getPassword())).
-                assertThat().body("phone", equalTo(user.getPhone())).
-                assertThat().body("userStatus", equalTo(user.getUserStatus()));
+//      II sposób z wykorzystaniem POJO
+        ApiResponse apiResponse = given().contentType("application/json")
+                .body(user)
+                .when().post("user")
+                .then().statusCode(200).extract().as(ApiResponse.class);
+
+        assertEquals(apiResponse.getCode(), Integer.valueOf(200), "Code");
+        assertEquals(apiResponse.getType(), "unknown", "Type");
+        assertEquals(apiResponse.getMessage(), Integer.toString(user.getId()), "Message");
     }
 }
