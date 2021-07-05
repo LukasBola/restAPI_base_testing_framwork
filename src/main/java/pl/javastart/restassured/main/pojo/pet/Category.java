@@ -1,11 +1,11 @@
 
-package pl.javastart.restassured.main.pojo;
+package pl.javastart.restassured.main.pojo.pet;
 
 import javax.annotation.Generated;
 import java.util.Objects;
 
 @Generated("jsonschema2pojo")
-public class Tag {
+public class Category {
 
     private Integer id;
     private String name;
@@ -30,8 +30,8 @@ public class Tag {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Tag tag = (Tag) o;
-        return Objects.equals(id, tag.id) && Objects.equals(name, tag.name);
+        Category category = (Category) o;
+        return Objects.equals(id, category.id) && Objects.equals(name, category.name);
     }
 
     @Override
