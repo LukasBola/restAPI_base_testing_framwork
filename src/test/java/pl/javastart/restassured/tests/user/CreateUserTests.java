@@ -3,6 +3,7 @@ package pl.javastart.restassured.tests.user;
 import org.testng.annotations.Test;
 import pl.javastart.restassured.main.pojo.ApiResponse;
 import pl.javastart.restassured.main.pojo.user.User;
+import pl.javastart.restassured.main.test.data.UserDataGenerator;
 import pl.javastart.restassured.tests.testbases.SuiteTestBase;
 
 import static io.restassured.RestAssured.given;
@@ -14,15 +15,8 @@ public class CreateUserTests extends SuiteTestBase {
     @Test
     public void givenCorrectUserDataWhenCreateUserThenUserIsCreatedTest() {
 
-        User user = new User();
-        user.setId(159);
-        user.setUsername("lukasss2345%$#*");
-        user.setFirstName("luk");
-        user.setLastName("asssdr");
-        user.setEmail("lub@ass.pl");
-        user.setPassword("password_strong");
-        user.setPhone("+666 666 666");
-        user.setUserStatus(666);
+        UserDataGenerator userDataGenerator = new UserDataGenerator();
+        User user = userDataGenerator.generateUser();
 
 ////      I sposób
 //        given().
