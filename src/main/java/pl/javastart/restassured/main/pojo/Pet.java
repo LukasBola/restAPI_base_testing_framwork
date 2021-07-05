@@ -1,5 +1,5 @@
 
-package pojo;
+package pl.javastart.restassured.main.pojo;
 
 import javax.annotation.Generated;
 import java.util.List;

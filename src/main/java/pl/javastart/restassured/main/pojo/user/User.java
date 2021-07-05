@@ -1,5 +1,5 @@
 
-package pojo.user;
+package pl.javastart.restassured.main.pojo.user;
 
 import javax.annotation.Generated;
 
