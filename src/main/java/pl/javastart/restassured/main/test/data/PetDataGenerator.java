@@ -16,12 +16,12 @@ public class PetDataGenerator extends TestDataGenerator{
 
     public Pet generatePet(){
         Category category = new Category();
-        PetCategory randomPetCategory = randomPetCategory();
+        PetCategory randomPetCategory = faker().options().option(PetCategory.class);
         category.setId(randomPetCategory.getId());
         category.setName(randomPetCategory.getCategoryName());
 
         Tag tag = new Tag();
-        PetTags randomPetTag = randomPetTag();
+        PetTags randomPetTag = faker().options().option(PetTags.class);
         tag.setId(randomPetTag.getTagId());
         tag.setName(randomPetTag.getTagName());
 
@@ -31,23 +31,24 @@ public class PetDataGenerator extends TestDataGenerator{
         pet.setName(faker().funnyName().name());
         pet.setPhotoUrls(Collections.singletonList(faker().internet().url()));
         pet.setTags(Collections.singletonList(tag));
-        PetStatus randomPetStatus = randomPetStatus();
+        PetStatus randomPetStatus = faker().options().option(PetStatus.class);
         pet.setStatus(randomPetStatus.getStatus());
         return pet;
     }
 
-    private PetStatus randomPetStatus() {
-        int pick= new Random().nextInt(PetStatus.values().length);
-        return PetStatus.values()[pick];
-    }
+//    private PetStatus randomPetStatus() {
+//        int pick= new Random().nextInt(PetStatus.values().length);
+//        return PetStatus.values()[pick];
+//    }
+//
+//    private PetCategory randomPetCategory() {
+//        int pick = new Random().nextInt(PetCategory.values().length);
+//        return PetCategory.values()[pick];
+//    }
+//
+//    private PetTags randomPetTag() {
+//        int pick = new Random().nextInt(PetTags.values().length);
+//        return PetTags.values()[pick];
+//    }
 
-    private PetCategory randomPetCategory() {
-        int pick = new Random().nextInt(PetCategory.values().length);
-        return PetCategory.values()[pick];
-    }
-
-    private PetTags randomPetTag() {
-        int pick = new Random().nextInt(PetTags.values().length);
-        return PetTags.values()[pick];
-    }
 }
