@@ -1,5 +1,6 @@
 package pl.javastart.restassured.tests.user;
 
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 import pl.javastart.restassured.main.pojo.ApiResponse;
 import pl.javastart.restassured.main.pojo.user.User;
@@ -12,11 +13,13 @@ import static org.testng.Assert.assertEquals;
 
 public class CreateUserTests extends SuiteTestBase {
 
+    private User user;
+
     @Test
     public void givenCorrectUserDataWhenCreateUserThenUserIsCreatedTest() {
 
         UserDataGenerator userDataGenerator = new UserDataGenerator();
-        User user = userDataGenerator.generateUser();
+        user = userDataGenerator.generateUser();
 
 ////      I sposób
 //        given().
@@ -39,5 +42,16 @@ public class CreateUserTests extends SuiteTestBase {
         assertEquals(apiResponse.getCode(), Integer.valueOf(200), "Code");
         assertEquals(apiResponse.getType(), "unknown", "Type");
         assertEquals(apiResponse.getMessage(), Integer.toString(user.getId()), "Message");
+    }
+
+    @AfterMethod
+    public void cleanUpAfterTest() {
+        ApiResponse apiResponse = given().contentType("application/json")
+                .when().delete("user/{userName}", user.getUsername())
+                .then().statusCode(200).extract().as(ApiResponse.class);
+
+        assertEquals(apiResponse.getCode(), Integer.valueOf(200), "Code");
+        assertEquals(apiResponse.getType(), "unknown", "Type");
+        assertEquals(apiResponse.getMessage(), user.getUsername(), "Message");
     }
 }
