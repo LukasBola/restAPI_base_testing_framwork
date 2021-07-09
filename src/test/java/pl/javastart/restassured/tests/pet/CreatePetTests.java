@@ -1,10 +1,12 @@
 package pl.javastart.restassured.tests.pet;
 
+import org.apache.http.HttpStatus;
 import org.assertj.core.api.Assertions;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 import pl.javastart.restassured.main.pojo.ApiResponse;
 import pl.javastart.restassured.main.pojo.pet.Pet;
+import pl.javastart.restassured.main.request.configuration.RequestConfigurationBuilder;
 import pl.javastart.restassured.main.test.data.PetDataGenerator;
 import pl.javastart.restassured.tests.testbases.SuiteTestBase;
 
@@ -18,12 +20,12 @@ public class CreatePetTests extends SuiteTestBase {
     @Test
     public void givenPetWhenPostPetThenPetIsCreatedTest() {
 
-        PetDataGenerator petDataGenerator = new PetDataGenerator();
-        pet = petDataGenerator.generatePet();
+        pet = new PetDataGenerator().generatePet();
 
-        Pet actualPet = given().body(pet).contentType("application/json")
+        Pet actualPet = given().spec(RequestConfigurationBuilder.getDefaultRequestSpecification())
+                .body(pet)
                 .when().post("pet")
-                .then().statusCode(200).extract().as(Pet.class);
+                .then().statusCode(HttpStatus.SC_OK).extract().as(Pet.class);
 
         pet.setName("Diego"); // <<== celowo psuję test by uzyskać błąd i zademonstrować działanie asercji
 
@@ -32,12 +34,12 @@ public class CreatePetTests extends SuiteTestBase {
 
     @AfterMethod
     public void cleanUpAfterTest() {
-        ApiResponse apiResponse = given().contentType("application/json")
+        ApiResponse apiResponse = given().spec(RequestConfigurationBuilder.getDefaultRequestSpecification())
                 .when().delete("pet/{petId}", pet.getId())
-                .then().statusCode(200).extract().as(ApiResponse.class);
+                .then().statusCode(HttpStatus.SC_OK).extract().as(ApiResponse.class);
 
         ApiResponse expectedApiResponse = new ApiResponse();
-        expectedApiResponse.setCode(200);
+        expectedApiResponse.setCode(HttpStatus.SC_OK);
         expectedApiResponse.setType("unknown");
         expectedApiResponse.setMessage(pet.getId().toString());
 
