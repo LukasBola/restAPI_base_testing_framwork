@@ -1,5 +1,6 @@
 package pl.javastart.restassured.tests.user;
 
+import org.assertj.core.api.Assertions;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 import pl.javastart.restassured.main.pojo.ApiResponse;
@@ -21,27 +22,21 @@ public class CreateUserTests extends SuiteTestBase {
         UserDataGenerator userDataGenerator = new UserDataGenerator();
         user = userDataGenerator.generateUser();
 
-////      I sposób
-//        given().
-//                body(user).
-//                contentType("application/json").
-//                when().post("user").
-//                then().
-//                assertThat().statusCode(200).
-//                assertThat().body(
-//                "code", equalTo(200),
-//                "type", equalTo("unknown"),
-//                "message", equalTo(Integer.toString(user.getId())));
-
-//      II sposób z wykorzystaniem POJO
         ApiResponse apiResponse = given().contentType("application/json")
                 .body(user)
                 .when().post("user")
                 .then().statusCode(200).extract().as(ApiResponse.class);
 
-        assertEquals(apiResponse.getCode(), Integer.valueOf(200), "Code");
-        assertEquals(apiResponse.getType(), "unknown", "Type");
-        assertEquals(apiResponse.getMessage(), Integer.toString(user.getId()), "Message");
+        ApiResponse expectedApiResponse = new ApiResponse();
+        expectedApiResponse.setCode(200);
+        expectedApiResponse.setType("unknown");
+        expectedApiResponse.setMessage(user.getId().toString());
+
+        apiResponse.setMessage("invalid_message_test"); // <<== celowo psuję test by uzyskać błąd i zademonstrować działanie asercji
+        Assertions.
+                assertThat(apiResponse).describedAs("Send Pet was different than received by API").
+                usingRecursiveComparison().
+                isEqualTo(expectedApiResponse);
     }
 
     @AfterMethod
@@ -50,8 +45,14 @@ public class CreateUserTests extends SuiteTestBase {
                 .when().delete("user/{userName}", user.getUsername())
                 .then().statusCode(200).extract().as(ApiResponse.class);
 
-        assertEquals(apiResponse.getCode(), Integer.valueOf(200), "Code");
-        assertEquals(apiResponse.getType(), "unknown", "Type");
-        assertEquals(apiResponse.getMessage(), user.getUsername(), "Message");
+        ApiResponse expectedApiResponse = new ApiResponse();
+        expectedApiResponse.setCode(200);
+        expectedApiResponse.setType("unknown");
+        expectedApiResponse.setMessage(user.getUsername());
+
+        Assertions.
+                assertThat(apiResponse).describedAs("Send user was different than received by API").
+                usingRecursiveComparison().
+                isEqualTo(expectedApiResponse);
     }
 }
