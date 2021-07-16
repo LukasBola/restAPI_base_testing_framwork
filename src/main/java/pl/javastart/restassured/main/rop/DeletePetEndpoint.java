@@ -9,7 +9,7 @@ import java.lang.reflect.Type;
 
 import static io.restassured.RestAssured.given;
 
-public class DeletePetEndpoint extends BaseEndpoint<DeletePetEndpoint, Pet> {
+public class DeletePetEndpoint extends BaseEndpoint<DeletePetEndpoint, ApiResponse> {
 
     private Integer petId;
 

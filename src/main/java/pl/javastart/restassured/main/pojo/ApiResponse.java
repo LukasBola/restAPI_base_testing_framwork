@@ -10,6 +10,16 @@ public class ApiResponse {
     private String message;
     private Map<String, Object> additionalProperties = new HashMap<>();
 
+    public ApiResponse(Integer code, String type, String message) {
+        this.code = code;
+        this.type = type;
+        this.message = message;
+    }
+
+    public ApiResponse(){
+    };
+
+
     public Integer getCode() {
         return code;
     }
