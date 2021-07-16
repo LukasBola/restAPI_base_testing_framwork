@@ -5,26 +5,26 @@ import org.assertj.core.api.Assertions;
 
 import java.lang.reflect.Type;
 
-public abstract class BaseEndpoint<E, M> {
+public abstract class BaseEndpoint<Endpoint, Model> {
 
     protected Response response;
 
     protected abstract Type getModelType();
 
-    public abstract E sendRequest();
+    public abstract Endpoint sendRequest();
 
     protected abstract int getSuccessStatusCode();
 
-    public M getResponseModel() {
+    public Model getResponseModel() {
         return response.as(getModelType());
     }
 
-    public E assertRequestSuccess() {
+    public Endpoint assertRequestSuccess() {
         return assertStatusCode(getSuccessStatusCode());
     }
 
-    public E assertStatusCode(int statusCode) {
+    public Endpoint assertStatusCode(int statusCode) {
         Assertions.assertThat(response.getStatusCode()).as("Status code").isEqualTo(statusCode);
-        return (E) this;
+        return (Endpoint) this;
     }
 }
