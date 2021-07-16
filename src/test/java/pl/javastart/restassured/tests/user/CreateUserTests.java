@@ -7,6 +7,7 @@ import org.testng.annotations.Test;
 import pl.javastart.restassured.main.pojo.ApiResponse;
 import pl.javastart.restassured.main.pojo.user.User;
 import pl.javastart.restassured.main.rop.CreateUserEndpoint;
+import pl.javastart.restassured.main.rop.DeleteUserEndpoint;
 import pl.javastart.restassured.main.test.data.UserDataGenerator;
 import pl.javastart.restassured.tests.testbases.SuiteTestBase;
 
@@ -22,11 +23,7 @@ public class CreateUserTests extends SuiteTestBase {
         user = new UserDataGenerator().generateUser();
 
         ApiResponse apiResponse = new CreateUserEndpoint().setUser(user).sendRequest().assertRequestSuccess().getResponseModel();
-
-        ApiResponse expectedApiResponse = new ApiResponse();
-        expectedApiResponse.setCode(HttpStatus.SC_OK);
-        expectedApiResponse.setType("unknown");
-        expectedApiResponse.setMessage(user.getId().toString());
+        ApiResponse expectedApiResponse = new ApiResponse(HttpStatus.SC_OK, "unknown", user.getId().toString());
 
 //        apiResponse.setMessage("invalid_message_test"); // <<== celowo psuję test by uzyskać błąd i zademonstrować działanie asercji
         Assertions.
@@ -37,14 +34,8 @@ public class CreateUserTests extends SuiteTestBase {
 
     @AfterMethod
     public void cleanUpAfterTest() {
-        ApiResponse apiResponse = given().contentType("application/json")
-                .when().delete("user/{userName}", user.getUsername())
-                .then().statusCode(HttpStatus.SC_OK).extract().as(ApiResponse.class);
-
-        ApiResponse expectedApiResponse = new ApiResponse();
-        expectedApiResponse.setCode(HttpStatus.SC_OK);
-        expectedApiResponse.setType("unknown");
-        expectedApiResponse.setMessage(user.getUsername());
+        ApiResponse apiResponse = new DeleteUserEndpoint().setUserName(user.getUsername()).sendRequest().assertRequestSuccess().getResponseModel();
+        ApiResponse expectedApiResponse = new ApiResponse(HttpStatus.SC_OK, "unknown", user.getUsername());
 
         Assertions.
                 assertThat(apiResponse).describedAs("Send user was different than received by API").
